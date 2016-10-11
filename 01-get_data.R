@@ -11,7 +11,6 @@ rm(list = ls())
 gdp_url <- "ftp://ftp.ibge.gov.br/Pib_Municipios/2010_2013/base/base_xls.zip"
 geo_url <- "ftp://geoftp.ibge.gov.br/organizacao_do_territorio/estrutura_territorial/localidades/Geomedia_MDB/BR_Localidades_2010_v1.mdb"
 
-
 # Creates data dir
 if(!file.exists("data")){
   dir.create("data")

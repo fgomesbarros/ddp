@@ -25,27 +25,28 @@ gdp <- read.xlsx2(file = "data/base.xls", sheetIndex = 1,
 gdp <- gdp[, c(1:5, 17, 19)]
 names(gdp) <- gdp_columns
 
-## Filters rows
-gdp <- gdp[gdp$state_id == "26" & gdp$year == "2013", ]
-
-## Removes columns
-gdp <- gdp[, c("county_id", "county_name", "GDP", "GPD_per_capita")]
-
-## Converts data
-gdp$county_id <- as.numeric(gdp$county_id)
-gdp$GDP <- as.numeric(gdp$GDP)
-gdp$GPD_per_capita <- as.numeric(gdp$GPD_per_capita)
-
+## Filters rows and colunms
+gdp <- gdp %>%
+  filter(state_id == "26" & year == "2013") %>%
+  select(one_of(c("county_id", "county_name", "GDP", "GPD_per_capita"))) %>%
+  mutate(county_id = as.numeric(county_id)) %>%
+  mutate(GDP = as.numeric(GDP)) %>%
+  mutate(GPD_per_capita = as.numeric(GPD_per_capita))
+  
 # Cleans geospatial data
 geospatial <- mdb.get(file = geo_file, tables = "BR_Localidades_2010_v1")
 
 ## Filters data
-geospatial <- geospatial[geospatial$TIPO == "URBANO" 
-                         & geospatial$CD.CATEGORIA == 1, ]
-geospatial <- geospatial[, c("CD.GEOCODMU", "LONG", "LAT")]
-
-## Converts data
-geospatial$CD.GEOCODMU <- as.numeric(geospatial$CD.GEOCODMU)
+geospatial <- geospatial %>%
+  filter(TIPO == "URBANO" & CD.NIVEL == 1) %>%
+  select(CD.GEOCODMU, LONG, LAT) %>%
+  mutate(CD.GEOCODMU = as.numeric(CD.GEOCODMU))
 
 # Joins data
 df <- left_join(x = gdp, y = geospatial, by = c("county_id" = "CD.GEOCODMU"))
+
+# To lower column names
+names(df)[5:6] <- tolower(names(df)[5:6])
+
+# Saves on disk
+write.csv2(x = df, file = "data/gdp_geo.csv", row.names = FALSE)
