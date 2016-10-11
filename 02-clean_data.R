@@ -40,7 +40,9 @@ geospatial <- mdb.get(file = geo_file, tables = "BR_Localidades_2010_v1")
 geospatial <- geospatial %>%
   filter(TIPO == "URBANO" & CD.NIVEL == 1) %>%
   select(CD.GEOCODMU, LONG, LAT) %>%
-  mutate(CD.GEOCODMU = as.numeric(CD.GEOCODMU))
+  mutate(CD.GEOCODMU = as.numeric(CD.GEOCODMU)) %>%
+  mutate(LONG = as.numeric(LONG)) %>%
+  mutate(LAT = as.numeric(LAT))
 
 # Joins data
 df <- left_join(x = gdp, y = geospatial, by = c("county_id" = "CD.GEOCODMU"))

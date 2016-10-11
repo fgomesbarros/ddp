@@ -1,0 +1,27 @@
+---
+title: "Gross Domestic Product - Pernambuco"
+author: "Fabio Barros"
+date: "11 de outubro de 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(leaflet)
+rm(list = ls())
+```
+# Gross Domestic Product of Pernambuco
+```{r}
+gdp <- read.csv2(file = "data/gdp_geo.csv")
+
+radius <- 30 * (gdp$GPD_per_capita - min(gdp$GPD_per_capita)) / 
+  (max(gdp$GPD_per_capita) - min(gdp$GPD_per_capita)) + 2
+
+my_map <- leaflet() %>% 
+  addTiles() %>%
+  fitBounds(-40, -4, -31, -8) %>%
+  addCircleMarkers(lng = gdp$long, lat = gdp$lat, radius = radius)
+my_map
+```
+
+
