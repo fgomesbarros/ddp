@@ -10,17 +10,21 @@ knitr::opts_chunk$set(echo = TRUE)
 library(leaflet)
 rm(list = ls())
 ```
-# Gross Domestic Product of Pernambuco
+# Gross Domestic Product of Pernambuco in 2013
 ```{r}
+# Reads data
 gdp <- read.csv2(file = "data/gdp_geo.csv")
 
-radius <- 30 * (gdp$GPD_per_capita - min(gdp$GPD_per_capita)) / 
-  (max(gdp$GPD_per_capita) - min(gdp$GPD_per_capita)) + 2
+# Normalizes GDP data from 1 to 30
+radius_gdp <- 29 * (gdp$GPD_per_capita - min(gdp$GPD_per_capita)) /
+  (max(gdp$GPD_per_capita) - min(gdp$GPD_per_capita)) + 1
 
+# Creates and displays map
 my_map <- leaflet() %>% 
   addTiles() %>%
   fitBounds(-40, -4, -31, -8) %>%
-  addCircleMarkers(lng = gdp$long, lat = gdp$lat, radius = radius)
+  addCircleMarkers(lng = gdp$long, lat = gdp$lat, color = "red", 
+                   radius = radius_gdp, options = )
 my_map
 ```
 
