@@ -1,0 +1,45 @@
+---
+title: "GDP of Municipalities in Pernambuco"
+author: "Fabio Barros"
+date: "12 de outubro de 2016"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+rm(list = ls())
+require(plotly)
+```
+
+## GPD Histogram
+```{r}
+# Reads data
+gdp <- read.csv2(file = "data/gdp_geo.csv", dec = ",", encoding = "latin1",
+                 stringsAsFactors = FALSE)
+
+# Filters data
+gdp <- filter(gdp, state_id == 26 & reference_year == 2013)
+
+# Creates factors
+gdp$mesoregion_name <- as.factor(gdp$mesoregion_name)
+gdp$microregion_name <- as.factor(gdp$microregion_name)
+
+# GDP Histogram
+plot_ly(x = gdp$gdp, type = "histogram")
+```
+
+## GPD per Capita Histogram
+```{r}
+plot_ly(x = gdp$gdp_per_capita, type = "histogram")
+```
+
+## Box plot GDP  
+```{r}
+plot_ly(data = gdp, y = ~gdp, color = ~mesoregion_name, type = "box")
+```
+
+## Box plot GDP per capita 
+```{r}
+plot_ly(data = gdp, y = ~gdp_per_capita, color = ~mesoregion_name, type = "box")
+```
+
