@@ -1,30 +1,42 @@
 ---
-title: "Gross Domestic Product - Pernambuco"
+title: "GDP per capita of Pernambuco counties in 2013"
 author: "Fabio Barros"
 date: "11 de outubro de 2016"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(leaflet)
 rm(list = ls())
 ```
 
-# Gross Domestic Product of Pernambuco in 2013
+## Info Map
+
+This maps shows the Gross Domestic Product (GDP) per capita of the counties of the brazilian state of Pernambuco in 2013. 
+
+Currency: all values are in thousands of brazilian reals (BRL).
+
+Data source: [Brazilian Institute of Geography and Statistics](http://www.ibge.gov.br/english/)
+
+Reproducible code: [https://github.com/fgomesbarros/ddp](https://github.com/fgomesbarros/ddp)
+
 ```{r}
 # Reads data
 gdp <- read.csv2(file = "data/gdp_geo.csv")
 
 # Normalizes GDP data from 1 to 30
-radius_gdp <- 39 * (gdp$GDP_per_capita - min(gdp$GDP_per_capita)) /
+radius_gdp <- 29 * (gdp$GDP_per_capita - min(gdp$GDP_per_capita)) /
     (max(gdp$GDP_per_capita) - min(gdp$GDP_per_capita)) + 1
+
+popup_msg <- paste(gdp$county_name, ": ", gdp$GDP_per_capita, sep = "")
 
 # Creates and displays map
 my_map <- leaflet() %>% 
     addTiles() %>%
-    fitBounds(-40, -4, -32, -8) %>%
-    addCircleMarkers(lng = gdp$long, lat = gdp$lat, color = "blue", 
-                     radius = radius_gdp)
+    fitBounds(-42, -4, -32, -8) %>%
+    addCircleMarkers(lng = gdp$long, lat = gdp$lat, color = "green", 
+                     radius = radius_gdp, popup = popup_msg)
 my_map
 ```
+
