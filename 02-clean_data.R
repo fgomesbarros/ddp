@@ -66,4 +66,5 @@ df <- left_join(x = gdp, y = geospatial,
 names(df) <- tolower(names(df))
 
 # Saves on disk
-write.csv2(x = df, file = "data/gdp_geo.csv", row.names = FALSE)
+write.csv2(x = df, file = "data/gdp_geo.csv", row.names = FALSE, 
+           fileEncoding = "latin1")
