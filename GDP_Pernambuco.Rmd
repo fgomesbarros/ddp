@@ -1,5 +1,5 @@
 ---
-title: "GDP per capita of Pernambuco counties in 2013"
+title: "GDP per Capita of Municipalities in Pernambuco"
 author: "Fabio Barros"
 date: "11 de outubro de 2016"
 output: html_document
@@ -8,12 +8,13 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 library(leaflet)
+library(dplyr)
 rm(list = ls())
 ```
 
 ## Info Map
 
-This maps shows the Gross Domestic Product (GDP) per capita of the counties of the brazilian state of Pernambuco in 2013. 
+This maps shows the Gross Domestic Product (GPD) per capita of municipalities in the brazilian state of Pernambuco in 2013. Click on circles to see information about each municipality.
 
 Currency: all values are in thousands of brazilian reals (BRL).
 
@@ -23,13 +24,18 @@ Reproducible code: [https://github.com/fgomesbarros/ddp](https://github.com/fgom
 
 ```{r}
 # Reads data
-gdp <- read.csv2(file = "data/gdp_geo.csv")
+gdp <- read.csv2(file = "data/gdp_geo.csv", dec = ",", encoding = "latin1", 
+                 stringsAsFactors = FALSE)
 
-# Normalizes GDP data from 1 to 30
-radius_gdp <- 29 * (gdp$GDP_per_capita - min(gdp$GDP_per_capita)) /
-    (max(gdp$GDP_per_capita) - min(gdp$GDP_per_capita)) + 1
+# Filters data
+gdp <- filter(gdp, state_id == 26 & reference_year == 2013)
 
-popup_msg <- paste(gdp$county_name, ": ", gdp$GDP_per_capita, sep = "")
+# Normalizes gdp data from 1 to 50
+radius_gdp <- 49 * (gdp$gdp_per_capita - min(gdp$gdp_per_capita)) /
+    (max(gdp$gdp_per_capita) - min(gdp$gdp_per_capita)) + 1
+
+# Creates pop-up messages
+popup_msg <- paste(gdp$municipality_name, ": ", gdp$gdp_per_capita, sep = "")
 
 # Creates and displays map
 my_map <- leaflet() %>% 
@@ -39,4 +45,3 @@ my_map <- leaflet() %>%
                      radius = radius_gdp, popup = popup_msg)
 my_map
 ```
-
